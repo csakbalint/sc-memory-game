@@ -5,6 +5,9 @@
   "author": "Balint Csak <csak.balint@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "mongodb:start": "docker run -p 27017:27017 -d bitnami/mongodb:latest",
+    "mongodb:kill": "docker ps | grep bitnami/mongodb:latest | awk '{print $1}' | xargs -I {} docker kill {}",
+    "mongodb": "npm run mongodb:kill && npm run mongodb:start",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
@@ -24,17 +27,32 @@
     "@nestjs/microservices": "^5.4.0",
     "@nestjs/testing": "^5.4.0",
     "@nestjs/websockets": "^5.4.0",
+    "bluebird": "^3.5.3",
+    "class-transformer": "^0.2.0",
+    "class-validator": "^0.9.1",
+    "convict": "^4.4.0",
+    "dotenv": "^6.1.0",
     "lodash": "^4.17.11",
+    "mongoose": "^5.3.14",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
-    "rxjs": "^6.2.2"
+    "rxjs": "^6.2.2",
+    "sinon": "^7.1.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.24",
+    "@types/convict": "^4.2.0",
+    "@types/dotenv": "^6.1.0",
     "@types/express": "^4.16.0",
     "@types/jest": "^23.3.1",
     "@types/lodash": "^4.14.118",
+    "@types/mongodb": "^3.1.15",
+    "@types/mongoose": "^5.3.2",
     "@types/node": "^10.7.1",
+    "@types/sinon": "^5.0.7",
     "@types/supertest": "^2.0.5",
+    "@types/uuid": "^3.4.4",
     "jest": "^23.5.0",
     "nodemon": "^1.18.3",
     "prettier": "^1.14.2",
@@ -56,6 +74,9 @@
     "testRegex": ".spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "src/(.*)": "<rootDir>/$1"
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
