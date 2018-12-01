@@ -1,75 +1,71 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# SC-MEMORY-GAME
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Your task is to make a REST API for a basic card-matching game, the kind that your brother/sister/best friend always cheated at when you were little. In case you need a reminder, here’s how it should work.
 
-## Description
+As you can see, I wrote this code in Typescript, I hope you don't mind.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+I built this server with [nestjs](https://nestjs.com/) because I haven't used it so far and I really love [IoC](https://en.wikipedia.org/wiki/Inversion_of_control). I also used Jest (not mocha), because it came with the starter kit.
 
-## Installation
+They also provided a simple starter kit (as you can see), which I decided to use here. I also used one of my previous code responsible for the database connection, but apart from this, anything else is fresh and new.
+
+I made a [README](./API_EXAMPLES.md) file with a few examples of each endpoints of the api, please have a look at it.
+
+## Achievments
+
+- [x] Allow a client to start a new game with the exact amount of cards to show “face down”.
+- [x] Allow a client to submit a user’s score (pay attention to validation and fraud detection, too!)
+- [x] Allow a client to fetch the all time high score results.
+- [x] Allow another client to join a created game (real-time multiplayer feature).
+- [x] A client sets up a new game, and the server sends a unique game identifier to this client. Another client can connect to this exact game using this ID.
+- [x] There should be 2 clients connected to the same game in real-time to start a match.
+- [ ] During an ongoing match between 2 clients, if the active client - i.e. whose turn it is in the game - does not interact with the system for 10 seconds, the turn is automatically passed back to the other client.
+- [ ] The client who finds more pairs is the winner.
+- [x] The client who submit its score is the winner.
+- [x] Implement some kind of testing for these features.
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ```bash
-$ npm install
+npm run mongodb # (optional, see below)
+git clone https://github.com/csakbalint/sc-memory-game.git
+npm run init
+npm run start
 ```
 
-## Running the app
+### Prerequisites
 
-```bash
-# development
-$ npm run start
+Please make sure to have an up-and-running docker machine on your computer. If not, see [this link](https://github.com/docker/docker-install) or run a local mongodb instance on your localhost:27017.
 
-# watch mode
-$ npm run start:dev
+I used Node.js v10.13, you'll also need one (preferably this version).
 
-# production mode
-npm run start:prod
+### Installing
+
+A step by step series of examples that tell you how to get a development env running
+
+To start the app in develop mode, run the following command
+
+```
+npm run start:dev
 ```
 
-## Test
+To run tests, call the following command
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```
+npm run test
 ```
 
-## Support
+or
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+npm run test:watch
+```
 
-## Stay in touch
+## Deployment
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+I didn't work on the deployment, because writing code with Typescript in TDD isn't the fastest thing on my list, but I'd add a PM2 as a cheap solution. I'd also use the free plan by MongoLab.
 
 ## License
 
-  Nest is [MIT licensed](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
