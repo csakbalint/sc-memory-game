@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import * as mongoose from 'mongoose';
 import * as assert from 'assert';
 
-import { config } from 'src/config';
+import { config } from '../config';
 
 assert(config.mongodb, 'Missing database configuration');
 

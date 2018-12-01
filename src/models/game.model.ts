@@ -3,7 +3,7 @@ import { Schema, Document } from 'mongoose';
 import { v4 as generateId } from 'uuid';
 import { values as _values } from 'lodash';
 
-import { connection } from 'src/shared/connection';
+import { connection } from '../shared/connection';
 
 export enum Status {
   Pending = 'Pending',
