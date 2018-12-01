@@ -71,4 +71,19 @@ describe('GameController', () => {
       expect(game.status).toBe(Status.Active);
     });
   });
+
+  describe('generate cards', () => {
+    it('should fail if invalid number', () => {
+      expect(() => service._generateCards(0)).toThrowError();
+    });
+
+    it('should generate duplicated images', () => {
+      const cards = service._generateCards(10);
+      expect(cards.length).toBe(_uniq(cards).length * 2);
+    });
+
+    it('should generate the exact amount of images', () => {
+      expect(service._generateCards(10).length).toBe(10);
+    });
+  });
 });
