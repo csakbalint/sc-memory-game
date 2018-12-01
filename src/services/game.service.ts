@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import { Injectable } from '@nestjs/common';
 import { chain as _chain } from 'lodash';
 
-import { Game, gameRepository } from 'src/models/game.model';
+import { Game, gameRepository, Status } from '../models/game.model';
 
 @Injectable()
 export class GameService {
@@ -11,6 +11,29 @@ export class GameService {
       createdBy: player,
       pictures: this._generateCards(size),
     });
+  }
+
+  async joinGame(token: string, player: string): Promise<Game> {
+    const game = await gameRepository.findOneAndUpdate(
+      // players can join only to pending games
+      { token, joined: null, status: Status.Pending },
+      { joined: player, status: Status.Active },
+      { new: true },
+    );
+    assert(game, `Missing or already running game ${token}`);
+    return game;
+  }
+
+  revealCard(cardId: string, player: string): Promise<Game> {
+    return null;
+  }
+
+  fetchGame(gameId: string): Promise<Game> {
+    return null;
+  }
+
+  _finishGame(game: Game): Promise<Game> {
+    return null;
   }
 
   _generateCards(size: number) {

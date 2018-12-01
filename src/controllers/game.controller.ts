@@ -5,12 +5,12 @@ import {
   Post,
   UsePipes,
   ValidationPipe,
+  Param,
 } from '@nestjs/common';
+import { IsString, IsInt, Min, Max } from 'class-validator';
 
-import { GameService } from 'src/services/game.service';
-import { Game } from '@src/models/game.model';
-
-import { IsString, IsInt, Min, Max, Length } from 'class-validator';
+import { GameService } from '../services/game.service';
+import { Game } from '../models/game.model';
 
 export class CreateGameRequest {
   @IsInt()
@@ -19,7 +19,11 @@ export class CreateGameRequest {
   readonly size: number;
 
   @IsString()
-  @Length(10)
+  readonly player: string;
+}
+
+export class JoinGameRequest {
+  @IsString()
   readonly player: string;
 }
 
@@ -31,5 +35,14 @@ export class GameController {
   @UsePipes(new ValidationPipe({ transform: true }))
   createGame(@Body() { size, player }: CreateGameRequest): Promise<Game> {
     return this.gameService.createGame(size, player);
+  }
+
+  @Post(':token/join')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  joinGame(
+    @Param('token') token: string,
+    @Body() { player }: JoinGameRequest,
+  ): Promise<Game> {
+    return this.gameService.joinGame(token, player);
   }
 }

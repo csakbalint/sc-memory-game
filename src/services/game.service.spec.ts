@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { spy, SinonSpy } from 'sinon';
+import { uniq as _uniq } from 'lodash';
 
 import { GameService } from './game.service';
-import { Game, gameRepository } from '../models/game.model';
+import { gameRepository, Status } from '../models/game.model';
 
 describe('GameController', () => {
   let app: TestingModule;
@@ -16,7 +17,7 @@ describe('GameController', () => {
   });
 
   beforeEach(async () => {
-    await gameRepository.remove({});
+    await gameRepository.deleteMany({});
     service = app.get<GameService>(GameService);
   });
 
@@ -38,11 +39,36 @@ describe('GameController', () => {
 
     it('should generate game well', async () => {
       const size = 10;
-      const player = 'alma';
-      const game: Game = await service.createGame(size, player);
+      const player = 'first';
+      const game = await service.createGame(size, player);
       expect(game.createdBy).toBe(player);
       expect(game.pictures.length).toBe(size);
       expect(generateCards.calledOnce).toBe(true);
+    });
+  });
+
+  describe('join game', () => {
+    it('should fail if game is missing', async () => {
+      await expect(service.joinGame('invalid_token', '')).rejects.toBeTruthy();
+    });
+
+    it('should fail if the game is already started', async () => {
+      const { token } = await service.createGame(20, 'first');
+      await gameRepository.updateOne({ token }, { joined: 'second' });
+      await expect(service.joinGame(token, 'third')).rejects.toBeTruthy();
+      await gameRepository.updateOne(
+        { token },
+        { joined: null, status: Status.Active },
+      );
+      await expect(service.joinGame(token, 'third')).rejects.toBeTruthy();
+    });
+
+    it('should run well', async () => {
+      const secondPlayer = 'second';
+      const { token } = await service.createGame(20, 'first');
+      const game = await service.joinGame(token, secondPlayer);
+      expect(game.joined).toBe(secondPlayer);
+      expect(game.status).toBe(Status.Active);
     });
   });
 });
