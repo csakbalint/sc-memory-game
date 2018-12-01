@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Schema, Document } from 'mongoose';
 import { v4 as generateId } from 'uuid';
 import { values as _values } from 'lodash';
@@ -11,7 +10,7 @@ export enum Status {
   Closed = 'Closed',
 }
 
-export interface Game extends Document {
+export interface Game {
   token: string;
   pictures: string[];
   status: Status;
@@ -50,4 +49,7 @@ GameSchema.set('timestamps', true);
 // remove versionKey (__v)
 GameSchema.set('versionKey', false);
 
-export const gameRepository = connection.model<Game>('Game', GameSchema);
+export const gameRepository = connection.model<Game & Document>(
+  'Game',
+  GameSchema,
+);

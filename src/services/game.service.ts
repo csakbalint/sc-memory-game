@@ -1,19 +1,25 @@
 import * as assert from 'assert';
 import { Injectable } from '@nestjs/common';
-import { chain as _chain } from 'lodash';
+import { chain as _chain, difference as _difference } from 'lodash';
 
-import { Game, gameRepository, Status } from '../models/game.model';
+import { gameRepository, Status } from '../models/game.model';
+
+export interface PickCardsParams {
+  player: string;
+  first: number;
+  second: number;
+}
 
 @Injectable()
 export class GameService {
-  async createGame(size: number, player: string): Promise<Game> {
+  async createGame(size: number, player: string) {
     return gameRepository.create({
       createdBy: player,
       pictures: this._generateCards(size),
     });
   }
 
-  async joinGame(token: string, player: string): Promise<Game> {
+  async joinGame(token: string, player: string) {
     const game = await gameRepository.findOneAndUpdate(
       // players can join only to pending games
       { token, joined: null, status: Status.Pending },
@@ -24,16 +30,42 @@ export class GameService {
     return game;
   }
 
-  revealCard(cardId: string, player: string): Promise<Game> {
-    return null;
+  async fetchGame(token: string) {
+    return gameRepository.findOne({ token });
   }
 
-  fetchGame(gameId: string): Promise<Game> {
-    return null;
+  async pickCards(token: string, { player, first, second }: PickCardsParams) {
+    let game = await gameRepository.findOne({ token });
+    assert(game, `Missing game ${token}`);
+    assert(
+      game.createdBy === player || game.joined === player,
+      `You are not a participant`,
+    );
+    assert(
+      first >= 0 && first < game.pictures.length,
+      `Invalid picture position`,
+    );
+    assert(
+      second >= 0 && second < game.pictures.length,
+      `Invalid picture position`,
+    );
+    if (game.pictures[first] === game.pictures[second]) {
+      let pictures = _difference(game.pictures, [game.pictures[first]]);
+      game = await gameRepository.findOneAndUpdate(
+        { token },
+        { $set: { pictures } },
+        { new: true },
+      );
+    }
+    return game;
   }
 
-  _finishGame(game: Game): Promise<Game> {
-    return null;
+  async finishGame(token: string, player: string) {
+    return gameRepository.findOneAndUpdate(
+      { token },
+      { winner: player, status: Status.Closed },
+      { new: true },
+    );
   }
 
   _generateCards(size: number) {
